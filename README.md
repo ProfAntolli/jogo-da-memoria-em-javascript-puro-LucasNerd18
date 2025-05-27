@@ -1,0 +1,1 @@
+O presente trabalho apresenta a implementação de um Jogo da Memória temático, inspirado nos universos Marvel e DC, com o objetivo de proporcionar uma experiência divertida, interativa e inclusiva para múltiplos jogadores. A proposta visa não apenas o entretenimento, mas também o estímulo à memória, à atenção e à socialização entre os participantes.
