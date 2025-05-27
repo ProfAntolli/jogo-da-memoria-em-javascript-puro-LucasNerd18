@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Jogo da Memória - Marvel & DC</title>
+    <link rel="stylesheet" href="Jogo da memória.css">
+    <style>
+        body {
+            position: relative;
+            min-height: 100vh;
+            margin: 0;
+        }
+        body.hide-game {
+            overflow: hidden;
+        }
+        #bg-image {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.22;
+            pointer-events: none;
+        }
+        /* Tela inicial */
+        #start-screen, #name-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #0074D9cc 0%, #FF4136cc 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.7s;
+        }
+        #start-screen.hide, #name-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #start-screen h1, #name-screen h1 {
+            font-size: 2.7em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 2px 8px #000a;
+            letter-spacing: 2px;
+        }
+        #start-screen p, #name-screen p {
+            font-size: 1.25em;
+            color: #fff;
+            margin-bottom: 18px;
+            text-shadow: 0 1px 6px #000a;
+        }
+        #name-screen input {
+            padding: 10px;
+            font-size: 1em;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 180px;
+            text-align: center;
+        }
+        #start-screen button, #name-screen button {
+            padding: 14px 36px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            border: none;
+            background: #fff;
+            color: #0074D9;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+            animation: pulse 1.5s infinite;
+        }
+        #start-screen button:hover, #name-screen button:hover {
+            background: #FF4136;
+            color: #fff;
+            transform: scale(1.07);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 #FF4136aa; }
+            70% { box-shadow: 0 0 0 18px transparent; }
+            100% { box-shadow: 0 0 0 0 transparent; }
+        }
+        /* Modal de vitória */
+        #victory-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 20;
+            align-items: center;
+            justify-content: center;
+        }
+        #victory-modal.active {
+            display: flex;
+        }
+        #victory-content {
+            background: #fff;
+            color: #222;
+            padding: 40px 30px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 6px 32px #000a;
+            animation: pop 0.7s;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.7); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        #timer {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: #fff;
+            text-shadow: 0 1px 4px #0008;
+        }
+        @media (max-width: 600px) {
+            #victory-content { padding: 20px 5vw; }
+            #start-screen h1, #name-screen h1 { font-size: 2em; }
+        }
+        body.hide-game #game-board,
+        body.hide-game #status,
+        body.hide-game #timer,
+        body.hide-game button:not(#start-btn):not(#names-btn),
+        body.hide-game h1:not(.main-title) {
+            display: none !important;
+        }
+        h1.main-title {
+            margin-top: 32px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px #000a;
+        }
+    </style>
+</head>
+<body class="hide-game">
+    <!-- Imagem de fundo -->
+    <img id="bg-image" src="https://th.bing.com/th/id/R.28faed980b5e7bd962bf7cd4a8de613d?rik=H9cACKuJEfOiiw&pid=ImgRaw&r=0">
+    <!-- Tela inicial -->
+    <div id="start-screen">
+        <h1>Jogo da Memória<br>Marvel & DC</h1>
+        <p>Desafie um amigo e descubra quem tem a melhor memória de super-herói!</p>
+        <button id="start-btn">Começar</button>
+    </div>
+    <!-- Tela de nomes -->
+    <div id="name-screen" class="hide">
+        <h1>Jogadores</h1>
+        <p>Digite os nomes dos jogadores:</p>
+        <input id="player1" placeholder="Jogador 1" maxlength="12" autocomplete="off">
+        <input id="player2" placeholder="Jogador 2" maxlength="12" autocomplete="off">
+        <button id="names-btn">Iniciar Jogo</button>
+    </div>
+    <!-- Modal de vitória -->
+    <div id="victory-modal">
+        <div id="victory-content">
+            <h2 id="victory-title"></h2>
+            <p id="victory-msg"></p>
+            <button onclick="restartGame(true)">Jogar Novamente</button>
+        </div>
+    </div>
+    <h1 class="main-title">Jogo da Memória - Marvel & DC</h1>
+    <div id="timer"></div>
+    <div id="game-board"></div>
+    <div id="status"></div>
+    <button onclick="restartGame()">Reiniciar</button>
+    <script src="Jogo da memória.js"></script>
+    <script>
+        // Fluxo das telas
+        document.getElementById('start-btn').onclick = function() {
+            document.getElementById('start-screen').classList.add('hide');
+            setTimeout(() => {
+                document.getElementById('start-screen').style.display = 'none';
+                document.getElementById('name-screen').classList.remove('hide');
+            }, 700);
+        };
+        document.getElementById('names-btn').onclick = function() {
+            let p1 = document.getElementById('player1').value.trim() || "Jogador 1";
+            let p2 = document.getElementById('player2').value.trim() || "Jogador 2";
+            window.playerNames = [p1, p2];
+            document.getElementById('name-screen').classList.add('hide');
+            setTimeout(() => {
+                document.getElementById('name-screen').style.display = 'none';
+                document.body.classList.remove('hide-game');
+                if (typeof startGame === 'function') startGame();
+            }, 700);
+        };
+    </script>
+</body>
+</html>

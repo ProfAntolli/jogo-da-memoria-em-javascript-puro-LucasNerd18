@@ -1,0 +1,155 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #0074D9 0%, #FF4136 100%);
+    min-height: 100vh;
+    margin: 0;
+    color: #fff;
+    text-align: center;
+}
+h1 {
+    margin-top: 32px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px #000a;
+}
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 120px);
+    grid-gap: 20px;
+    justify-content: center;
+    margin: 40px auto 20px auto;
+    width: max-content;
+}
+.card {
+    width: 120px;
+    height: 160px;
+    perspective: 800px;
+    cursor: pointer;
+    position: relative;
+    /* Suaviza o hover */
+    transition: transform 0.18s;
+}
+.card:hover {
+    transform: scale(1.04);
+    z-index: 2;
+}
+.card-inner {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(.4,2,.6,1);
+    transform-style: preserve-3d;
+    position: relative;
+}
+.card.flipped .card-inner,
+.card.matched .card-inner {
+    transform: rotateY(180deg);
+}
+/* Animação de acerto */
+.card.matched .card-front {
+    background: #4CAF50;
+    color: #fff;
+    animation: match-glow 0.7s;
+    box-shadow: 0 0 24px 8px #4CAF50cc;
+}
+@keyframes match-glow {
+    0% { box-shadow: 0 0 0 0 #4CAF5000; }
+    60% { box-shadow: 0 0 24px 12px #4CAF50cc; }
+    100% { box-shadow: 0 0 0 0 #4CAF5000; }
+}
+/* Animação de erro */
+.card.wrong .card-inner {
+    animation: shake 0.4s;
+}
+@keyframes shake {
+    0% { transform: rotateY(0deg) translateX(0); }
+    20% { transform: rotateY(0deg) translateX(-10px);}
+    40% { transform: rotateY(0deg) translateX(10px);}
+    60% { transform: rotateY(0deg) translateX(-8px);}
+    80% { transform: rotateY(0deg) translateX(8px);}
+    100% { transform: rotateY(0deg) translateX(0);}
+}
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px #0007;
+}
+.card-front {
+    background: #fff;
+    color: #222;
+    transform: rotateY(180deg);
+    padding: 10px 0 0 0;
+}
+.card-front img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px #0003;
+    background: #f3f3f3;
+}
+.card-front div {
+    font-size: 15px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px #fff8;
+}
+.card-back {
+    background: linear-gradient(135deg, #0074D9 60%, #FF4136 100%);
+    color: #fff;
+    font-size: 48px;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff3;
+}
+#status {
+    margin-bottom: 12px;
+    font-size: 18px;
+    min-height: 24px;
+    text-shadow: 0 1px 4px #0006;
+}
+button {
+    padding: 12px 28px;
+    font-size: 17px;
+    border-radius: 8px;
+    border: none;
+    background: #0074D9;
+    color: #fff;
+    cursor: pointer;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px #0003;
+}
+button:hover {
+    background: #005fa3;
+    transform: scale(1.05);
+}
+/* Animação de vitória (trophy emoji) */
+#victory-content .trophy {
+    font-size: 2.5em;
+    animation: bounce 1.2s infinite;
+    display: block;
+    margin-bottom: 10px;
+}
+@keyframes bounce {
+    0%, 100% { transform: translateY(0);}
+    50% { transform: translateY(-18px);}
+}
+@media (max-width: 600px) {
+    #game-board {
+        grid-template-columns: repeat(2, 120px);
+        grid-gap: 14px;
+    }
+    .card {
+        width: 100px;
+        height: 130px;
+    }
+
+}
